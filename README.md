@@ -35,7 +35,7 @@ def main():
     # Caso esteja usando MacOS, retire o comentário (#) da linha abaixo.
     # folder_path = r"~/Users/seu_usuario_mac/Documents/nome_da_pasta_vault"
 	
-	# Caso esteja usando Windows, retire o comentário (#) da linha abaixo
+    # Caso esteja usando Windows, retire o comentário (#) da linha abaixo
     # folder_path = r"C:\Users\seu_usuario_windows\documents\nome_da_pasta_vault"
     
     # Mude para o diretório especificado
@@ -72,13 +72,13 @@ Este código verifica todos os arquivos e subpastas dentro do seu **Obsidian Vau
 O primeiro passo é ter uma conta cadastrada no [**GitHub**](https://github.com/), em seguida crie um repositório com o nome que desejar como por Ex: **ObsidianBackup** e por segurança, certifique-se de [**criar um repositório privado**](https://docs.github.com/pt/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/setting-repository-visibility). 
 
 Existem **duas formas** de configurar, sendo:
-1. Clonar o repositório criado no **GitHub** dentro da sua pasta **Documents** ``"C:\Users\seu_usuario_windows\Documents"`` ou ``"~/Users/seu_usuario_mac/Documents"``. Execute o comando 👇
+1. Clonar o repositório criado no **GitHub** dentro da sua pasta **Documents** ``cd "C:\Users\seu_usuario_windows\Documents"`` ou ``cd "~/Users/seu_usuario_mac/Documents"``. Execute o comando 👇
 
 ```
 git clone https://github.com/seu_usuario_git/nome_do_seu_repositorio.git
 ```
 
-2. Ou acessar o seu **Obsidian Vault** via terminal e iniciar um repositório **git** direto nele. Execute o comando 👇
+2. Ou acessar o seu **Obsidian Vault** via terminal com ``cd "C:\Users\seu_usuario_windows\Documents\ObsidianVault"`` para Windows ou para MacOS ``cd "~/Users/seu_usuario_mac/Documents/ObsidianVault"`` e iniciar um repositório **git** direto. Execute o comando 👇
 
 ```
 git init
