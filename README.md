@@ -1,2 +1,108 @@
+
+![ObisdianLogo](https://obsidian.md/favicon.ico)
+
+# Привет, Обсидиан!
+
 # VaultGuard
-VaultGuard é uma solução gratuita para fazer backup diário do seu Obsidian Vault. Usando Git e Python, o script verifica alterações e realiza commits automáticos para o GitHub, criando um histórico de backups. Ideal para quem quer proteger suas notas de forma simples e sem custos adicionais.
+**VaultGuard** é uma solução gratuita para fazer backup diário do seu [**Obsidian Vault**](https://forum.obsidian.md/t/what-exactly-is-a-vault/4369). Usando **Git** e **Python**, o script verifica alterações e realiza commits automáticos para o GitHub, **criando um histórico de** backups. Ideal para quem quer proteger suas notas de forma **simples** e **sem custos** adicionais.
+
+## Requisitos
+- [**Git**](https://git-scm.com/downloads) 2.48.1 ou superior.
+- [**Python**](https://www.python.org/downloads/) 3.13.1 ou superior.
+- App de Automação nativo do sistema:
+  - Windows: [**Agendador de Tarefas**](http://cursos.basesoft.com.br/Reinf/Agendadar_Tarefas.pdf). ``Win+R > taskschd.msc``
+  - MacOS: [**Automator**](https://support.apple.com/pt-br/guide/automator/welcome/mac). ``Cmd+Space > Automator``
+
+## Por quê?
+Que o app é uma maravilha todos sabemos, contudo para ter um backup dos seus dados pessoais é necessário **pagar uma assinatura** para desfrutar dessa vantagem.
+
+Pensando em alguns colegas LATAM e Russos e que não podem pagar essa assinatura no momento e precisam trabalhar com a ferramenta, decidi desenvolver este projeto.
+
+## Como funciona?
+Todo e qualquer arquivo criado dentro do Obsidian fica armazenado dentro de um **Obsidian Vault**, que na prática é nada mais que uma pasta dedicada em: ``"C:\Users\seu_usuario_windows\Documents"`` ou ``"~/Users/seu_usuario_mac/Documents"`` com o mesmo nome.
+
+Sabendo disso criei um código em **Python** 👇
+
+_**VaultGuard.py**_ 
+```
+import os
+import subprocess
+from datetime import datetime
+
+def main():
+    # Defina o caminho para a pasta do Obsidian
+    
+    # Caso esteja usando MacOS, retire o comentário (#) da linha abaixo.
+    # folder_path = r"~/Users/seu_usuario_mac/Documents/nome_da_pasta_vault"
+	
+	# Caso esteja usando Windows, retire o comentário (#) da linha abaixo
+    # folder_path = r"C:\Users\seu_usuario_windows\documents\nome_da_pasta_vault"
+    
+    # Mude para o diretório especificado
+    os.chdir(folder_path)
+
+    # Verifica se há alterações no repositório Git
+    result = subprocess.run(["git", "status", "--porcelain"], stdout=subprocess.PIPE, text=True)
+    if not result.stdout.strip():
+        print("Nenhuma alteração encontrada. Fechando...")
+        return  # Fecha o script se não houver alterações
+
+    # Executa os comandos Git
+    try:
+        subprocess.run(["git", "add", "."], check=True)
+        subprocess.run(["git", "status"], check=True)
+        current_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")  # Formato dd/mm/aaaa hh:mm:ss
+        commit_message = f"Daily backup: {current_time}"
+        subprocess.run(["git", "commit", "-m", commit_message], check=True)
+        subprocess.run(["git", "push", "origin", "main"], check=True)
+        print("Backup concluído com sucesso.")
+    except subprocess.CalledProcessError as e:
+        print(f"Erro ao executar um comando Git: {e}")
+        return
+
+if __name__ == "__main__":
+    main()
+```
+
+Este código verifica todos os arquivos e subpastas dentro do seu **Obsidian Vault** e, caso encontre alguma alteração, faz o commit e push para o repositório do github contendo a mensagem ``Daily backup: 00/00/0000 00:00:00`` com a data e hora do backup para que possa haver um histórico. 
+
+# Como configurar?
+
+## Repositório
+O primeiro passo é ter uma conta cadastrada no [**GitHub**](https://github.com/), em seguida crie um repositório com o nome que desejar como por Ex: **ObsidianBackup** e por segurança, certifique-se de [**criar um repositório privado**](https://docs.github.com/pt/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/setting-repository-visibility). 
+
+Existem **duas formas** de configurar, sendo:
+1. Clonar o repositório criado no **GitHub** dentro da sua pasta **Documents** ``"C:\Users\seu_usuario_windows\Documents"`` ou ``"~/Users/seu_usuario_mac/Documents"``. Execute o comando 👇
+
+```
+git clone https://github.com/seu_usuario_git/nome_do_seu_repositorio.git
+```
+
+2. Ou acessar o seu **Obsidian Vault** via terminal e iniciar um repositório **git** direto nele. Execute o comando 👇
+
+```
+git init
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/seu_usuario_git/nome_do_seu_repositorio.git
+git push -u origin main
+```
+
+## Código Python
+Agora copie o código do script **Python** deste repositório e salve em algum lugar da sua máquina. Você pode fazer isso via terminal usando ``cd documents`` para ir até a pasta de documentos e ``echo "cole_o_script_aqui" > VaultGuard.py`` para criar o arquivo Python do script.
+
+💡 Obs: Eu recomendo criar uma pasta chamada **Automações** dentro de documents e deixar o script lá.
+
+## Movendo seu Vault para a pasta Backup
+Por ultimo, basta mover o seu **Obsidian Vault** para dentro da pasta do seu repositório e pronto! 
+Agora é só modificar algum em algum documento deste Vault para teste e clicar duas vezes no executável do script **Python** para ele fazer o primeiro backup.
+
+## Como automatizar
+Para que funcione de forma adequada e automática, deve-se utilizar o **software de automação padrão do sistema**. Basta programar uma **regra** para **executar esse script python diariamente** as 23:59:59.
+
+Dessa forma, fica garantido um backup diário de todos o seu workflow **sem pagar nada** e de forma completamente segura e, a partir de qualquer dispositivo com acesso a internet, você tem total controle de acessar a sua conta github, baixar o arquivo .zip do repositório ou dar um ``git clone seu_repositorio.git`` e **continuar de onde parou**.
+
+## Dicas
+Agora você está seguro! Basta deixar que a mágica aconteça automaticamente todos os dias ou caso queira fazer um backup imediato, é só executar manualmente o script **Python** referente ao backup e pronto!
+
+# Большое спасибо!
